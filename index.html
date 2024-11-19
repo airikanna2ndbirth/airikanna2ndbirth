@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>2024 리제 생일 후원자 명단</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+        }
+        .sponsor-section {
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .sponsor-image {
+            width: 100%;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #666;
+            position: relative;
+            margin-bottom: 20px;
+            border-radius: 20px;
+            overflow: hidden;
+            aspect-ratio: 16 / 9;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .sponsor-image.visible {
+            opacity: 1;
+        }
+        .cover-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+        .search-container {
+            display: flex;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        #searchInput {
+            flex-grow: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+            transition: all 0.3s;
+        }
+        #searchInput:focus {
+            border-color: #4a90e2;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+        }
+        #searchButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #FF6D87;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        td {
+            text-align: center;
+            padding: 12px;
+            word-wrap: break-word;
+            white-space: normal;
+            overflow: visible;
+            position: relative;
+            width: 33.33%;
+            height: auto;
+            line-height: 1.2;
+        }
+        .nickname {
+            display: block;
+            word-break: break-word;
+            hyphens: auto;
+        }
+        .highlight {
+            background-color: #FF6D87;
+        }
+        #notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        #resultNavigation {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        #resultNavigation button {
+            margin: 0 5px;
+            padding: 5px 10px;
+            background-color: #FF6D87;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        #topButton {
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            z-index: 99;
+            width: 50px;
+            height: 50px;
+            border: none;
+            outline: none;
+            background-color: white;
+            color: #FF6D87;
+            cursor: pointer;
+            border-radius: 50%;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.3s, background-color 0.3s;
+            opacity: 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        #topButton:hover {
+            background-color: #f0f0f0;
+        }
+        .nav-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .nav-button {
+            width: auto;
+            padding: 15px;
+            margin: 0 5%;
+            font-size: 16px;
+            background-color: white;
+            color: black;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: background-color 0.3s;
+        }
+        .nav-button:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+<header>
+</header>
+<main id="sponsorContainer"></main>
+<div id="notification"></div>
+<div id="resultNavigation">
+    <span id="resultCount"></span>
+    <button id="prevResult">&lt; 이전</button>
+    <button id="nextResult">다음 &gt;</button>
+</div>
+<button id="topButton" title="Go to top">&#9650;</button>
+<script>
+    let currentResultIndex = 0;
+    let searchResults = [];
+
+    function showNotification(message) {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.style.display = 'block';
+
+        setTimeout(() => {
+            notification.style.opacity = '1';
+        }, 10);
+
+        setTimeout(() => {
+            notification.style.opacity = '0';
+        }, 1500);
+
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 2000);
+    }
+
+    function searchSponsor() {
+        const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+        
+        if (searchTerm === '') {
+            showNotification('검색어를 입력해주세요.');
+            return;
+        }
+    
+        const tables = document.getElementsByClassName('sponsor-table');
+        searchResults = [];
+        currentResultIndex = 0;
+    
+        for (let t = 0; t < tables.length; t++) {
+            const cells = tables[t].getElementsByTagName('td');
+    
+            for (let i = 0; i < cells.length; i++) {
+                cells[i].classList.remove('highlight');
+                const cellContent = cells[i].textContent.toLowerCase();
+                if (cellContent.includes(searchTerm)) {
+                    searchResults.push(cells[i]);
+                }
+            }
+        }
+    
+        if (searchResults.length > 0) {
+            highlightResult(0);
+            showResultNavigation();
+        } else {
+            showNotification('검색 결과가 없습니다.');
+            hideResultNavigation();
+        }
+    }
+
+    function highlightResult(index) {
+        searchResults.forEach(cell => cell.classList.remove('highlight'));
+        searchResults[index].classList.add('highlight');
+        searchResults[index].scrollIntoView({behavior: 'smooth', block: 'center'});
+        updateResultCount();
+    }
+
+    function showResultNavigation() {
+        const nav = document.getElementById('resultNavigation');
+        nav.style.display = 'block';
+        updateResultCount();
+    }
+
+    function hideResultNavigation() {
+        const nav = document.getElementById('resultNavigation');
+        nav.style.display = 'none';
+    }
+
+    function updateResultCount() {
+        const countSpan = document.getElementById('resultCount');
+        countSpan.textContent = `${currentResultIndex + 1} / ${searchResults.length}`;
+    }
+
+    function handleIntersection(entries, observer) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }
+    
+    function setupIntersectionObserver() {
+        const options = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+    
+        const observer = new IntersectionObserver(handleIntersection, options);
+        const images = document.querySelectorAll('.sponsor-image');
+        images.forEach(img => observer.observe(img));
+    }
+    
+    async function loadSponsors() {
+        try {
+            const response = await fetch('sponsors.json');
+            const data = await response.json();
+            const container = document.getElementById('sponsorContainer');
+
+            data.groups.forEach((group, index) => {
+                const section = document.createElement('div');
+                section.className = 'sponsor-section';
+
+                const imageDiv = document.createElement('div');
+                imageDiv.className = 'sponsor-image';
+                const img = document.createElement('img');
+                img.src = group.image;
+                img.alt = `사진 ${index + 1}`;
+                img.className = 'cover-image';
+                imageDiv.appendChild(img);
+
+                const table = document.createElement('table');
+                table.className = 'sponsor-table';
+
+                // 첫 번째 그룹에만 검색 바와 네비게이션 버튼 추가
+                if (index === 0) {
+                    const navButtons = document.createElement('div');
+                    navButtons.className = 'nav-buttons';
+                    navButtons.innerHTML = `
+                        <button class="nav-button" onclick="window.open('https://www.youtube.com/watch?v=3_0Ut2tlxLM', '_blank')">1st Original Song 『Festa!』</button>
+                        <button class="nav-button" onclick="window.open('https://linktr.ee/LizeBirthday2024', '_blank')">리제를 더 알고싶다면?</button>
+                        <button class="nav-button" onclick="window.open('https://tumblbug.com/pasteldream_2024lize/community/creator/fc211e6e-150f-4cdf-a253-927a540bc7ef', '_blank')">다른 광고 찾아가는 길</button>
+                    `;
+                    
+                    const searchContainer = document.createElement('div');
+                    searchContainer.className = 'search-container';
+                    searchContainer.innerHTML = `
+                        <input type="text" id="searchInput" placeholder="닉네임으로 검색...">
+                        <button id="searchButton">검색</button>
+                    `;
+                    
+                    section.appendChild(imageDiv);
+                    section.appendChild(navButtons);
+                    section.appendChild(searchContainer);
+                } else {
+                    section.appendChild(imageDiv);
+                }
+
+                // 후원자 이름을 3열로 나누어 표시
+                for (let i = 0; i < group.sponsors.length; i += 3) {
+                    const row = table.insertRow();
+                    for (let j = 0; j < 3; j++) {
+                        if (i + j < group.sponsors.length) {
+                            const cell = row.insertCell();
+                            cell.textContent = group.sponsors[i + j];
+                        }
+                    }
+                }
+
+                section.appendChild(table);
+                container.appendChild(section);
+                wrapNicknamesInSpan();
+                setupIntersectionObserver();
+            });
+
+            // 검색 기능 초기화
+            document.getElementById('searchButton').addEventListener('click', searchSponsor);
+            document.getElementById('searchInput').addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    searchSponsor();
+                }
+            });
+        } catch (error) {
+            console.error('Error loading sponsors:', error);
+        }
+    }
+
+    function wrapNicknamesInSpan() {
+        const cells = document.querySelectorAll('.sponsor-table td');
+        cells.forEach(cell => {
+            const nickname = cell.textContent;
+            cell.innerHTML = `<span class="nickname">${nickname}</span>`;
+        });
+    }
+
+    // 이전 및 다음 결과 버튼 이벤트 리스너
+    document.getElementById('prevResult').addEventListener('click', function() {
+        if (searchResults.length > 0) {
+            currentResultIndex = (currentResultIndex - 1 + searchResults.length) % searchResults.length;
+            highlightResult(currentResultIndex);
+        }
+    });
+
+    document.getElementById('nextResult').addEventListener('click', function() {
+        if (searchResults.length > 0) {
+            currentResultIndex = (currentResultIndex + 1) % searchResults.length;
+            highlightResult(currentResultIndex);
+        }
+    });
+
+    // 페이지 로드 시 후원자 데이터 불러오기
+    window.addEventListener('load', loadSponsors);
+
+    const topButton = document.getElementById("topButton");
+    
+    window.onscroll = function() {scrollFunction()};
+    
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            topButton.style.opacity = "1";
+        } else {
+            topButton.style.opacity = "0";
+        }
+    }
+
+    // 버튼 클릭 시 페이지 상단으로 스크롤
+    topButton.addEventListener("click", function() {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    });
+</script>
+</body>
+</html>
