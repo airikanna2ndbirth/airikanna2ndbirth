@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>2024 리제 생일 후원자 명단</title>
+    <title>2024 칸나 생일 후원자 명단</title>
     <style>
         body {
             margin: 0;
@@ -33,6 +33,22 @@
         .sponsor-image.visible {
             opacity: 1;
         }
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 비율 */
+            margin-bottom: 20px;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
         .cover-image {
             width: 100%;
             height: 100%;
@@ -60,7 +76,7 @@
         #searchButton {
             padding: 10px 20px;
             font-size: 16px;
-            background-color: #FF6D87;
+            background-color: #9795d4;
             color: white;
             border: none;
             border-radius: 0 4px 4px 0;
@@ -88,7 +104,7 @@
             hyphens: auto;
         }
         .highlight {
-            background-color: #FF6D87;
+            background-color: #9795d4;
         }
         #notification {
             position: fixed;
@@ -117,7 +133,7 @@
         #resultNavigation button {
             margin: 0 5px;
             padding: 5px 10px;
-            background-color: #FF6D87;
+            background-color: #9795d4;
             color: white;
             border: none;
             border-radius: 3px;
@@ -133,7 +149,7 @@
             border: none;
             outline: none;
             background-color: white;
-            color: #FF6D87;
+            color: #9795d4;
             cursor: pointer;
             border-radius: 50%;
             font-size: 24px;
@@ -291,40 +307,56 @@
                 const section = document.createElement('div');
                 section.className = 'sponsor-section';
 
-                const imageDiv = document.createElement('div');
-                imageDiv.className = 'sponsor-image';
-                const img = document.createElement('img');
-                img.src = group.image;
-                img.alt = `사진 ${index + 1}`;
-                img.className = 'cover-image';
-                imageDiv.appendChild(img);
-
-                const table = document.createElement('table');
-                table.className = 'sponsor-table';
-
-                // 첫 번째 그룹에만 검색 바와 네비게이션 버튼 추가
                 if (index === 0) {
+                    // 첫 번째 그룹에는 새로운 유튜브 비디오 추가
+                    const videoContainer = document.createElement('div');
+                    videoContainer.className = 'video-container';
+                    videoContainer.innerHTML = `
+                        <iframe
+                            width="560"
+                            height="315"
+                            src="https://www.youtube.com/embed/gq3gzxPBOK0?si=SgkJyFoGgfSnVEs6"
+                            title="YouTube video player"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin"
+                            allowfullscreen>
+                        </iframe>
+                    `;
+                    section.appendChild(videoContainer);
+
+                    // 네비게이션 버튼과 검색바 추가
                     const navButtons = document.createElement('div');
                     navButtons.className = 'nav-buttons';
                     navButtons.innerHTML = `
-                        <button class="nav-button" onclick="window.open('https://www.youtube.com/watch?v=3_0Ut2tlxLM', '_blank')">1st Original Song 『Festa!』</button>
-                        <button class="nav-button" onclick="window.open('https://linktr.ee/LizeBirthday2024', '_blank')">리제를 더 알고싶다면?</button>
-                        <button class="nav-button" onclick="window.open('https://tumblbug.com/pasteldream_2024lize/community/creator/fc211e6e-150f-4cdf-a253-927a540bc7ef', '_blank')">다른 광고 찾아가는 길</button>
+                        <button class="nav-button" onclick="window.open('', '_blank')">링크1</button>
+                        <button class="nav-button" onclick="window.open('', '_blank')">링크2</button>
+                        <button class="nav-button" onclick="window.open('', '_blank')">링크3</button>
                     `;
-                    
+
                     const searchContainer = document.createElement('div');
                     searchContainer.className = 'search-container';
                     searchContainer.innerHTML = `
                         <input type="text" id="searchInput" placeholder="닉네임으로 검색...">
                         <button id="searchButton">검색</button>
                     `;
-                    
-                    section.appendChild(imageDiv);
+
                     section.appendChild(navButtons);
                     section.appendChild(searchContainer);
                 } else {
+                    // 나머지 그룹은 기존처럼 이미지 표시
+                    const imageDiv = document.createElement('div');
+                    imageDiv.className = 'sponsor-image';
+                    const img = document.createElement('img');
+                    img.src = group.image;
+                    img.alt = `사진 ${index + 1}`;
+                    img.className = 'cover-image';
+                    imageDiv.appendChild(img);
                     section.appendChild(imageDiv);
                 }
+
+                const table = document.createElement('table');
+                table.className = 'sponsor-table';
 
                 // 후원자 이름을 3열로 나누어 표시
                 for (let i = 0; i < group.sponsors.length; i += 3) {
@@ -339,9 +371,10 @@
 
                 section.appendChild(table);
                 container.appendChild(section);
-                wrapNicknamesInSpan();
-                setupIntersectionObserver();
             });
+
+            wrapNicknamesInSpan();
+            setupIntersectionObserver();
 
             // 검색 기능 초기화
             document.getElementById('searchButton').addEventListener('click', searchSponsor);
