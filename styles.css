@@ -207,6 +207,7 @@ td {
     line-height: 1;
 }
 
+/* Welcome overlay styles */
 .welcome-overlay {
     position: fixed;
     top: 0;
@@ -225,9 +226,14 @@ td {
     padding: 20px;
 }
 
-.welcome-heart {
-    font-size: 48px;
-    margin-bottom: 20px;
+.welcome-mascot {
+    width: 800px;
+    height: 600px;
+    margin: 0 auto 20px;
+    background-image: url('images/thanks.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
     animation: bounce 1s infinite;
 }
 
@@ -244,7 +250,7 @@ td {
     animation: fadeIn 1s ease-out 0.3s both;
 }
 
-.welcome-close-btn {
+#welcomeCloseBtn {
     padding: 10px 30px;
     font-size: 16px;
     background-color: #9795d4;
@@ -254,9 +260,10 @@ td {
     cursor: pointer;
     transition: background-color 0.3s;
     animation: fadeIn 1s ease-out 0.6s both;
+    display: none;  /* 초기에는 숨겨진 상태 */
 }
 
-.welcome-close-btn:hover {
+#welcomeCloseBtn:hover {
     background-color: #8785c2;
 }
 
