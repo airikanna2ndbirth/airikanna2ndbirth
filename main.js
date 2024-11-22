@@ -125,52 +125,25 @@ async function loadSponsors() {
             const section = document.createElement('div');
             section.className = 'sponsor-section';
 
+            // 모든 그룹에 대해 동일한 이미지 처리
+            const imageDiv = document.createElement('div');
+            imageDiv.className = 'sponsor-image';
+            const img = document.createElement('img');
+            img.src = group.image;
+            img.alt = `사진 ${index + 1}`;
+            img.className = 'cover-image';
+            imageDiv.appendChild(img);
+            section.appendChild(imageDiv);
+
+            // 첫 번째 그룹에만 검색 바 추가
             if (index === 0) {
-                // 첫 번째 그룹에는 새로운 유튜브 비디오 추가
-                const videoContainer = document.createElement('div');
-                videoContainer.className = 'video-container';
-                videoContainer.innerHTML = `
-                    <iframe
-                        width="560"
-                        height="315"
-                        src="https://www.youtube.com/embed/gq3gzxPBOK0?si=SgkJyFoGgfSnVEs6"
-                        title="YouTube video player"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        referrerpolicy="strict-origin-when-cross-origin"
-                        allowfullscreen>
-                    </iframe>
-                `;
-                section.appendChild(videoContainer);
-
-                // 네비게이션 버튼과 검색바 추가
-                const navButtons = document.createElement('div');
-//                navButtons.className = 'nav-buttons';
-//                navButtons.innerHTML = `
-//                    <button class="nav-button" onclick="window.open('', '_blank')">링크1</button>
-//                    <button class="nav-button" onclick="window.open('', '_blank')">링크2</button>
-//                    <button class="nav-button" onclick="window.open('', '_blank')">링크3</button>
-//                `;
-
                 const searchContainer = document.createElement('div');
                 searchContainer.className = 'search-container';
                 searchContainer.innerHTML = `
                     <input type="text" id="searchInput" placeholder="닉네임으로 검색...">
                     <button id="searchButton">검색</button>
                 `;
-
-                section.appendChild(navButtons);
                 section.appendChild(searchContainer);
-            } else {
-                // 나머지 그룹은 기존처럼 이미지 표시
-                const imageDiv = document.createElement('div');
-                imageDiv.className = 'sponsor-image';
-                const img = document.createElement('img');
-                img.src = group.image;
-                img.alt = `사진 ${index + 1}`;
-                img.className = 'cover-image';
-                imageDiv.appendChild(img);
-                section.appendChild(imageDiv);
             }
 
             const table = document.createElement('table');
