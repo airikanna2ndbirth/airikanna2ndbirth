@@ -138,10 +138,13 @@ td {
     padding: 10px;
     border-radius: 5px;
     display: none;
+    white-space: nowrap; /* 줄바꿈 방지 */
+    display: flex;       /* Flexbox 사용 */
+    align-items: center; /* 세로 중앙 정렬 */
+    gap: 5px;           /* 요소들 사이 간격 */
 }
 
 #resultNavigation button {
-    margin: 0 5px;
     padding: 5px 10px;
     background-color: #9795d4;
     color: white;
@@ -194,7 +197,6 @@ td {
 }
 
 #closeNavigation {
-    margin-left: 5px;
     padding: 5px 10px;
     background-color: #ff4444;
     color: white;
@@ -204,8 +206,6 @@ td {
     font-size: 16px;
     line-height: 1;
 }
-
-/* 기존 CSS 유지하고 아래 내용 추가 */
 
 .welcome-overlay {
     position: fixed;
