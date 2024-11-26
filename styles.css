@@ -233,11 +233,17 @@ td {
 }
 
 .welcome-mascot {
+<<<<<<< HEAD
     width: 100%;
     max-width: 800px;
     height: auto;
     margin: 0 auto 20px;
     aspect-ratio: 4/3;
+=======
+    width: 800px;
+    height: 600px;
+    margin: 0 auto 20px;
+>>>>>>> 6605279fed4d333a563a61bf9badb922b78dcce5
     background-image: url('images/thanks.png');
     background-size: contain;
     background-position: center;
