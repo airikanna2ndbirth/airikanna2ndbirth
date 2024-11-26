@@ -7,7 +7,6 @@ body {
 .sponsor-section {
     padding: 20px;
     overflow: hidden;
-    margin-bottom: 20px;
 }
 
 .sponsor-image {
@@ -210,7 +209,7 @@ td {
     line-height: 1;
 }
 
-/* Welcome overlay styles */
+/* 초기화면 오버레이 */
 .welcome-overlay {
     position: fixed;
     top: 0;
@@ -270,13 +269,9 @@ td {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
-    animation: fadeIn 1s ease-out 0.6s both;
-    display: none;  /* 초기에는 숨겨진 상태 */
-}
-
-#welcomeCloseBtn:hover {
-    background-color: #8785c2;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1s ease-out, visibility 1s ease-out;
 }
 
 @keyframes bounce {
@@ -299,6 +294,7 @@ td {
     }
 }
 
+/* 헤더 */
 #pageHeader {
     position: sticky;
     top: 0;
@@ -316,4 +312,55 @@ td {
     font-size: 18px;
     font-weight: bold;
     color: #333;
+}
+
+/* 슬라이더 */
+.slider-container {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    aspect-ratio: 16 / 9;
+    touch-action: none;
+    user-select: none;
+}
+
+.slider-wrapper {
+    display: flex;
+    width: 200%;
+    height: 100%;
+    transform: translateX(0);
+    will-change: transform;
+    touch-action: none;
+}
+
+.slide {
+    width: 50%;
+    height: 100%;
+    object-fit: cover;
+    flex-shrink: 0;
+    pointer-events: none;
+}
+
+.pagination-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.dot.active {
+    background-color: white;
 }
